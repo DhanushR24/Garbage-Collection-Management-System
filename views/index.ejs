@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- HERE JavaScript Libs & Style Sheets-->
+    <link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
+    <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
+    <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
+    <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
+    <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
+    <!-- HERE JavaScript Libs & Style Sheets end -->
+    <title>SWM</title>
+</head>
+
+<body style="padding: 0; margin: 0;">
+    <!--In the div HERE Map will be rendered-->
+    <div id="map" style="width: 100%; height: 100%; padding: 0; margin: 0;">
+        <div style="width: 100%;height: 90%;" id="mapContainer"></div>
+        <div style="width: 100%; height: 10%; background-color: white;"></div>
+    </div>
+
+    <script>
+        // default location of Udupi
+        var lat = 13.340881;
+        var lng = 74.742142;
+
+        var origin = binCoordinates = `${lat},${lng}`;
+
+        if (navigator.geolocation) {
+            navigator.geolocation.watchPosition(showPosition);
+        } else {
+            console.log("Geolocation is not supported by this browser.");
+        }
+
+        function showPosition(position) {
+            lat = position.coords.latitude
+            lng =  position.coords.longitude;
+
+            truckMarker.setGeometry({ lat, lng });
+            origin = `${lat},${lng}`;
+
+            map.center = { lat, lng };
+        }
+
+        function calculateRouteFromAtoB(start, end) {
+            var router = platform.getRoutingService(null, 8),
+                routeRequestParams = {
+                    routingMode: 'fast',
+                    transportMode: 'car',
+                    origin: start,
+                    destination: end,
+                    return: 'polyline'
+                };
+
+            router.calculateRoute(
+                routeRequestParams,
+                onSuccess,
+                onError
+            );
+        }
+
+        function onSuccess(result) {
+            var route = result.routes[0];
+
+            /*
+            * The styling of the route response on the map is entirely under the developer's control.
+            * A representative styling can be found the full JS + HTML code of this example
+            * in the functions below:
+            */
+            addRouteShapeToMap(route);
+        
+        }
+        function onError(error) {
+            alert('Can\'t reach the remote server');
+            console.log(error)
+        }
+
+        //Step 1: initialize communication with the platform
+        // Replace variable YOUR_API_KEY with your own apikey
+        var platform = new H.service.Platform({
+            // apikey: 'm5jO0NiOf6JdpH_T8GLwiQ79Sn9mAeFtvLOJDV4Nh-E'
+            apikey: 'KFtQDR-RSEu6S3XI68xZpn3B8YIeDdDKqeawRlxXe5s'
+        });
+        var defaultLayers = platform.createDefaultLayers();
+        var map = new H.Map(document.getElementById('mapContainer'),
+            defaultLayers.vector.normal.map,
+            {
+                center: { lat, lng },
+                zoom: 12,
+                pixelRatio: window.devicePixelRatio || 1
+            }
+        );
+        window.addEventListener('resize', () => map.getViewPort().resize());
+        
+        var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+
+        // Create the default UI components
+        var ui = H.ui.UI.createDefault(map, defaultLayers);
+
+        function addRouteShapeToMap(route) {
+            route.sections.forEach((section) => {
+                // decode LineString from the flexible polyline
+                let linestring = H.geo.LineString.fromFlexiblePolyline(section.polyline);
+
+                // Create a polyline to display the route:
+                let polyline = new H.map.Polyline(linestring, {
+                style: {
+                    lineWidth: 10,
+                    strokeColor: 'rgba(0, 128, 255, 0.5)'
+                }
+                });
+
+                // Add the polyline to the map
+                map.addObject(polyline);
+                // And zoom to its bounding rectangle
+                map.getViewModel().setLookAtData({
+                bounds: polyline.getBoundingBox()
+                });
+            });
+        }
+
+        function toMMSS(duration) {
+            return Math.floor(duration / 60) + ' minutes ' + (duration % 60) + ' seconds.';
+        }
+
+        map.addEventListener('tap', (evt) => {
+            var coord = map.screenToGeo(evt.currentPointer.viewportX,
+                    evt.currentPointer.viewportY);
+
+            var binMarker = new H.map.Marker(bin, { icon: binIcon});
+            
+            binMarker.setGeometry(coord);
+
+            binCoordinates = `${coord.lat},${coord.lng}`;
+            
+            map.addObject(binMarker);
+
+            calculateRouteFromAtoB(origin, binCoordinates);
+            origin = binCoordinates;
+        })
+
+        var truck = { lat, lng };
+        var bin = { lat, lng };
+
+        // optionally - resize a larger PNG image to a specific size
+        var truckIcon = new H.map.Icon("https://img.icons8.com/fluency/48/000000/garbage-truck.png", { size: { w: 48, h: 48 } });
+        var binIcon = new H.map.Icon("https://img.icons8.com/external-flaticons-lineal-color-flat-icons/64/000000/external-garbage-bin-cleaning-flaticons-lineal-color-flat-icons.png", { size: { w: 36, h: 36 } });
+
+        // Create a marker icon from an image URL:
+        var truckMarker = new H.map.Marker(truck, { icon: truckIcon });
+
+        // binMarker.draggable = true;
+
+
+        // sewage water treatment plant
+        map.addObject(
+            new H.map.Marker(
+                {lat: 13.356750, lng: 74.745130},
+                {icon: new H.map.Icon("https://img.icons8.com/external-smashingstocks-circular-smashing-stocks/65/000000/external-sewage-nature-and-ecology-smashingstocks-circular-smashing-stocks.png", { size: { w: 48, h: 48 } })},
+            )
+        )
+        
+        // material recovery facility
+        map.addObject(
+            new H.map.Marker(
+                {lat: 13.185624, lng: 74.931412},
+                {icon: new H.map.Icon("https://img.icons8.com/color-glass/48/000000/landfill.png", { size: { w: 48, h: 48 } })},
+            )
+        )
+
+        // Add the marker to the map:
+        map.addObject(truckMarker);
+
+        </script>
+
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+</body>
+
+</html>
