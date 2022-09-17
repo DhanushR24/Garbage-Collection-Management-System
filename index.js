@@ -1,22 +1,31 @@
-const express = require('express')
-const morgan = require('morgan')
-const port = process.env.PORT || 3000
+const express = require("express");
+const morgan = require("morgan");
+const mongoose = require("mongoose");
 
-const app = express()
-app.use(morgan('dev'))
-app.use(express.static('public'))
+const port = process.env.PORT || 3000;
 
-app.use(express.json())
-app.use(express.urlencoded({ 
-    extended: true
-}))
+const app = express();
+app.use(morgan("dev"));
+app.use(express.static("public"));
 
-app.set('view engine', 'ejs');
+app.use(express.json());
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
 
-app.get('/', (req, res) => {
-    res.render('index')
-})
+app.set("view engine", "ejs");
 
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`)
-})
+app.get("/", (req, res) => {
+  res.render("index");
+});
+
+mongoose.connect(
+  "mongodb+srv://DbConnect:test12345@cluster.bh7j7.mongodb.net/GarbageCollection",
+  () => {
+    app.listen(port, () => {
+      console.log(`Server is running on port ${port}`);
+    });
+  }
+);
