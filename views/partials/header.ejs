@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>BinCollect | <%= title %>
+        </title>
+        <link rel="stylesheet" href="/styles.css" />
+        <link rel="shortcut icon" href="./images/Blogger.svg" type="image/x-icon">
+        <script src="https://kit.fontawesome.com/e5a5ba9f21.js" crossorigin="anonymous" defer></script>
+</head>
+
+<body>
+        <div class="header">
+                <div class="head_container container-flex">
+                        <div class="main_head container-flex">
+                                <div class="header_text">
+                                        <h1 class="head text" id="bin"><a href="/">BinCollect</a></h1>
+                                </div>
+                        </div>
+                        <div class="options container-flex">
+                                <% if(user) { %>
+                                        <h3>
+                                                <div class="greet">
+                                                        <a href="/" style="text-decoration: none">
+                                                                Hello, <%= user.name %>
+                                                        </a>
+                                                </div>
+                                        </h3>
+                                        <a href="/blogs">
+                                                <div class="blogs">Blogs</div>
+                                        </a>
+                                        <a href="/profile">
+                                                <div class="profile">Profile</div>
+                                        </a>
+                                        <a href="/logout">
+                                                <div class="logout">Logout</div>
+                                        </a>
+                                        <% } else { %>
+                                                <a href="/signup">
+                                                        <div class="signup">Sign up</div>
+                                                </a>
+                                                <a href="/login">
+                                                        <div class="login">Login</div>
+                                                </a>
+                                                <% } %>
+                                                        <div id="mode" style="color: white;">
+                                                                <i class="fas fa-sun fa-sm"></i>
+                                                        </div>
+                        </div>
+                </div>
+        </div>
+
+        <script defer>
+
+                const root = document.querySelector(':root');
+                const mode = document.getElementById('mode');
+                if (!document.cookie) {
+                        document.cookie = "mode=light";
+                }
+                var getMode = document.cookie.split("=")[1];
+                if (getMode == "dark") {
+                        mode.innerHTML = '<i class="fas fa-moon fa-sm" ></i>';
+                        root.classList.add('active');
+
+                } else {
+                        mode.innerHTML = '<i class="fas fa-sun fa-sm" ></i>';
+                        root.classList.remove('active');
+                }
+                const loc = window.location.href.split('/');
+                const active = loc[loc.length - 1]
+                mode.addEventListener('click', () => {
+                        getMode = document.cookie.split("=")[1];
+                        mode.querySelector('i').classList.toggle('fa-sun');
+                        mode.querySelector('i').classList.toggle('fa-moon');
+                        root.classList.toggle('active');
+                        document.cookie = `mode=${getMode == 'light' ? 'dark' : 'light'}`;
+                });
+                if (active) {
+                        document.querySelector(`.options a[href="/${active}"]`).classList.add('current-page')
+                }
+        </script>
