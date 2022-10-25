@@ -1,0 +1,74 @@
+<%- include('partials/header'); -%>
+
+        <form>
+                <h2>Sign up</h2>
+                <label for="name">Name <i class="fas fa-signature"></i></label>
+                <input type="text" name="name" autocomplete="off" placeholder="John Doe" />
+                <div class="name error"></div>
+
+                <label for="phone">Phone <i class="fas fa-at"></i></label>
+                <input type="text" name="phone" autocomplete="off" placeholder="0000000000" />
+                <div class="phone error"></div>
+
+                <label for="address">Address <i class="fas fa-user-tag"></i></label>
+                <input type="text" placeholder="1st street ..." name="address" autocomplete="off" />
+                <div class="address error"></div>
+
+                <label for="password">Password <i class="fas fa-unlock"></i></label>
+                <input type="password" name="password" autocomplete="off" placeholder="******" />
+                <div class="password error"></div>
+                <button>Sign up</button>
+                <div class="form_foot">
+                        <p>Already have an account? <a href="/login">Login</a></p>
+                </div>
+        </form>
+
+        <script>
+                const form = document.querySelector("form");
+                const nameError = document.querySelector(".name.error");
+                const phoneError = document.querySelector(".phone.error");
+                const passwordError = document.querySelector(".password.error");
+                const addressError = document.querySelector(".address.error");
+                form.addEventListener("submit", async (e) => {
+                        e.preventDefault();
+                        //reset errors
+                        nameError.textContent = "";
+                        phoneError.textContent = "";
+                        passwordError.textContent = "";
+                        addressError.textContent = "";
+                        //get values
+                        const name = form.name.value;
+                        const phone = form.phone.value;
+                        const address = form.address.value;
+                        const role = form.role.value;
+                        const password = form.password.value;
+                        try {
+                                const res = await fetch("/signup", {
+                                        method: "POST",
+                                        body: JSON.stringify({
+                                                name,
+                                                phone,
+                                                password,
+                                                address,
+                                                role
+                                        }),
+                                        headers: {
+                                                "Content-Type": "application/json"
+                                        },
+                                });
+                                const data = await res.json();
+                                console.log(data);
+                                if (data.errors) {
+                                        nameError.textContent = data.errors.name;
+                                        phoneError.textContent = data.errors.phone;
+                                        passwordError.textContent = data.errors.password;
+                                        addressError.textContent = data.errors.address;
+                                }
+                                if (data.user) {
+                                        location.assign("/");
+                                }
+                        } catch (err) {
+                                console.log(err);
+                        }
+                });
+        </script>

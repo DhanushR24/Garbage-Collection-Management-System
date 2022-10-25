@@ -18,9 +18,10 @@ app.use(
   })
 );
 
-app.use(userRouter);
-
 app.set("view engine", "ejs");
+
+app.get("*", checkUser);
+app.use(userRouter);
 
 mongoose
   .connect(
@@ -37,10 +38,14 @@ mongoose
   })
   .catch((err) => console.log(err));
 
-app.get("*", checkUser);
-
 app.get("/", (req, res) => {
   res.render("main", {
     title: "Home",
+  });
+});
+
+app.get("/map", (req, res) => {
+  res.render("index", {
+    title: "Map",
   });
 });
