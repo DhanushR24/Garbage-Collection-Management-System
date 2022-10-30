@@ -1,6 +1,7 @@
 const express = require("express");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
+const cookieParser = require("cookie-parser");
 
 const port = process.env.PORT || 3000;
 
@@ -10,6 +11,7 @@ const userRouter = require("./routers/UserRouter");
 const app = express();
 app.use(morgan("dev"));
 app.use(express.static("public"));
+app.use(cookieParser());
 
 app.use(express.json());
 app.use(
@@ -17,11 +19,7 @@ app.use(
     extended: true,
   })
 );
-
 app.set("view engine", "ejs");
-
-app.get("*", checkUser);
-app.use(userRouter);
 
 mongoose
   .connect(
@@ -38,11 +36,14 @@ mongoose
   })
   .catch((err) => console.log(err));
 
+app.get("*", checkUser);
 app.get("/", (req, res) => {
   res.render("main", {
     title: "Home",
   });
 });
+
+app.use(userRouter);
 
 app.get("/map", (req, res) => {
   res.render("index", {

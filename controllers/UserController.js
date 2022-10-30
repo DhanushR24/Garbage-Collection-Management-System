@@ -10,22 +10,40 @@ module.exports.signup_get = (req, res) => {
 };
 
 module.exports.signup_post = async (req, res) => {
-  const { name, phone, address, lat, lng, email, password } = req.body;
+  const { name, phone, address, latitude, longitude, password } = req.body;
 
   try {
     const user = await User.create({
       name,
       phone,
       address,
-      lat,
-      lng,
-      email,
+      latitude,
+      longitude,
       password,
     });
 
     console.log(user);
+
+    res.cookie(
+      "jwt",
+      jwt.sign(
+        {
+          id: user._id,
+        },
+        "secret",
+        {
+          expiresIn: 3 * 24 * 60 * 60,
+        }
+      ),
+      {
+        httpOnly: true,
+        maxAge: 3 * 24 * 60 * 60 * 1000,
+      }
+    );
+
     res.status(201).json({ user: user._id });
   } catch (err) {
+    console.log(err);
     const errors = handleError(err);
     res.status(400).json({ errors });
   }

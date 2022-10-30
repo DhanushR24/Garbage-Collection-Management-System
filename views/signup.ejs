@@ -1,18 +1,25 @@
 <%- include('partials/header'); -%>
 
         <form>
-                <h2>Sign up</h2>
+                <h2>SIGN UP</h2>
                 <label for="name">Name <i class="fas fa-signature"></i></label>
                 <input type="text" name="name" autocomplete="off" placeholder="John Doe" />
                 <div class="name error"></div>
 
-                <label for="phone">Phone <i class="fas fa-at"></i></label>
+                <label for="phone">Phone <i class="fas fa-phone"></i></label>
                 <input type="text" name="phone" autocomplete="off" placeholder="0000000000" />
                 <div class="phone error"></div>
 
                 <label for="address">Address <i class="fas fa-user-tag"></i></label>
                 <input type="text" placeholder="1st street ..." name="address" autocomplete="off" />
                 <div class="address error"></div>
+
+                <label id="location" for="location" onclick="getLocation()">Location <i class="fas fa-map-marked"></i>
+                </label>
+
+                <input type="text" placeholder="lat, long" name="location" autocomplete="off" style="cursor:not-allowed"
+                        disabled title="Click on Location to get the latitude and longitude" />
+                <div class="location error"></div>
 
                 <label for="password">Password <i class="fas fa-unlock"></i></label>
                 <input type="password" name="password" autocomplete="off" placeholder="******" />
@@ -29,7 +36,29 @@
                 const phoneError = document.querySelector(".phone.error");
                 const passwordError = document.querySelector(".password.error");
                 const addressError = document.querySelector(".address.error");
-                form.addEventListener("submit", async (e) => {
+                const locationError = document.querySelector(".location.error");
+
+                function getLocation() {
+                        document.getElementById("load").style.display = "block";
+                        console.log("block");
+                        if (navigator.geolocation) {
+                                navigator.geolocation.getCurrentPosition(showPosition);
+                        } else {
+                                document.getElementById("load").style.display = "none";
+                                console.log("none");
+                                alert("Geolocation is not supported by this browser.");
+                        }
+                }
+
+                function showPosition(position) {
+                        document.getElementById("load").style.display = "none";
+                        console.log("none");
+                        var location = position.coords.latitude + ", " + position.coords.longitude;
+
+                        form.location.value = location;
+                }
+
+                form.addEventListener("submit", (e) => {
                         e.preventDefault();
                         //reset errors
                         nameError.textContent = "";
@@ -40,35 +69,49 @@
                         const name = form.name.value;
                         const phone = form.phone.value;
                         const address = form.address.value;
-                        const role = form.role.value;
+                        const location = form.location.value.split(", ");
                         const password = form.password.value;
-                        try {
-                                const res = await fetch("/signup", {
-                                        method: "POST",
-                                        body: JSON.stringify({
-                                                name,
-                                                phone,
-                                                password,
-                                                address,
-                                                role
-                                        }),
-                                        headers: {
-                                                "Content-Type": "application/json"
-                                        },
-                                });
-                                const data = await res.json();
-                                console.log(data);
-                                if (data.errors) {
-                                        nameError.textContent = data.errors.name;
-                                        phoneError.textContent = data.errors.phone;
-                                        passwordError.textContent = data.errors.password;
-                                        addressError.textContent = data.errors.address;
-                                }
-                                if (data.user) {
-                                        location.assign("/");
-                                }
-                        } catch (err) {
-                                console.log(err);
-                        }
-                });
+
+                        const latitude = parseFloat(location[0]);
+                        const longitude = parseFloat(location[1]);
+
+                        console.log(location)
+                        fetch("/signup", {
+                                method: "POST",
+                                body: JSON.stringify({
+                                        name,
+                                        phone,
+                                        password,
+                                        address,
+                                        latitude,
+                                        longitude,
+                                }),
+                                headers: {
+                                        "Content-Type": "application/json"
+                                },
+                        })
+                                .then(res => res.json())
+                                .then((data) => {
+                                        console.log(data);
+                                        if (data.errors) {
+                                                nameError.textContent = data.errors.name;
+                                                phoneError.textContent = data.errors.phone;
+                                                passwordError.textContent = data.errors.password;
+                                                addressError.textContent = data.errors.address;
+
+                                                if (data.errors.latitude != "" || data.errors.longitude != "")
+                                                        locationError.textContent = "Location is required";
+                                        }
+                                        if (data.user) {
+                                                window.location.assign("/");
+                                        }
+                                })
+                                .catch((err) => {
+                                        console.log(err)
+                                })
+                })
         </script>
+
+        </body>
+
+        </html>

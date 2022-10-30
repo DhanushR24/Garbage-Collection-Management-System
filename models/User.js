@@ -26,6 +26,10 @@ const userSchema = new Schema({
     type: String,
     required: [true, "Password is required"],
   },
+  pickup: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const User = mongoose.model("User", userSchema);

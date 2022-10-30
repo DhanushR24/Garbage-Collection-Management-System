@@ -5,12 +5,11 @@ module.exports.handleError = (err) => {
   const error = {
     name: "",
     phone: "",
-    address: "",
     password: "",
   };
 
   if (err.message === "Invalid phone") {
-    error.email = "Invalid phone";
+    error.phone = "Invalid phone";
   }
   if (err.message === "Invalid password") {
     error.password = "Invalid password";
@@ -30,26 +29,21 @@ module.exports.handleError = (err) => {
 };
 
 module.exports.checkUser = (req, res, next) => {
-  try {
-    const token = req.cookies.jwt;
-
-    if (token) {
-      jwt.verify(token, "secret", async (err, decodedToken) => {
-        if (err) {
-          // console.log(err.message)
-          res.locals.user = null;
-          next();
-        } else {
-          let user = await User.findById(decodedToken.id);
-          res.locals.user = user;
-          next();
-        }
-      });
-    } else {
-      res.locals.user = null;
-      next();
-    }
-  } catch (err) {
+  const token = req.cookies.jwt;
+  if (token) {
+    jwt.verify(token, "secret", async (err, decodedToken) => {
+      if (err) {
+        console.log("err : " + err);
+        // console.log(err.message)
+        res.locals.user = null;
+        next();
+      } else {
+        let user = await User.findById(decodedToken.id);
+        res.locals.user = user;
+        next();
+      }
+    });
+  } else {
     res.locals.user = null;
     next();
   }
