@@ -58,22 +58,24 @@ module.exports.login_get = (req, res) => {
 module.exports.login_post = async (req, res) => {
   const { phone, password } = req.body;
 
-  const user = await User.findOne({ phone });
-
-  if (!user) {
-    throw new Error("Invalid phone");
-  } else {
-    if (user.password !== password) {
-      throw new Error("Invalid password");
-    }
-
-    res.cookie("jwt", jwt.sign({ id: user._id }, "secret"), {
-      httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000,
-    });
-  }
-
   try {
+    const user = await User.findOne({ phone });
+
+    if (!user) {
+      throw new Error("Invalid phone");
+    } else {
+      if (user.password !== password) {
+        throw new Error("Invalid password");
+      }
+
+      res.cookie("jwt", jwt.sign({ id: user._id }, "secret"), {
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000,
+      });
+    }
+    res.status(200).json({
+      user: user._id,
+    });
   } catch (err) {
     const errors = handleError(err);
     res.status(400).json({ errors });
