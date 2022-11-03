@@ -15,6 +15,8 @@
         <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
         <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
         <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
+
+        <link rel="shortcut icon" href="/images/truckFavicon.png" type="image/x-icon">
 </head>
 
 <body>
@@ -50,8 +52,11 @@
                                                         </a>
                                                 </div>
                                         </h3>
-                                        <a href="/blogs">
-                                                <div class="blogs">Blogs</div>
+                                        <a href="/pickup">
+                                                <div class="preference">Preference</div>
+                                        </a>
+                                        <a href="/track">
+                                                <div class="track">Track</div>
                                         </a>
                                         <a href="/profile">
                                                 <div class="profile">Profile</div>
@@ -75,14 +80,22 @@
         </div>
 
         <script defer>
+                function getCookie(name) {
+                        let cookie = {};
+                        document.cookie.split(';').forEach(function (el) {
+                                let [k, v] = el.split('=');
+                                cookie[k.trim()] = v;
+                        })
+                        return cookie[name];
+                }
 
                 const root = document.querySelector(':root');
                 const mode = document.getElementById('mode');
-                if (!document.cookie) {
+                if (!getCookie("mode")) {
                         document.cookie = "mode=light";
                 }
-                var getMode = document.cookie.split("=")[1];
-                if (getMode == "dark") {
+                var getMode = getCookie('mode');
+                if (getMode === "dark") {
                         mode.innerHTML = '<i class="fas fa-moon fa-sm" ></i>';
                         root.classList.add('active');
 
@@ -93,10 +106,12 @@
                 const loc = window.location.href.split('/');
                 const active = loc[loc.length - 1]
                 mode.addEventListener('click', () => {
-                        getMode = document.cookie.split("=")[1];
+                        getMode = getCookie("mode");
                         mode.querySelector('i').classList.toggle('fa-sun');
                         mode.querySelector('i').classList.toggle('fa-moon');
                         root.classList.toggle('active');
+
+                        console.log(getMode)
                         document.cookie = `mode=${getMode == 'light' ? 'dark' : 'light'}`;
                 });
                 if (active) {
