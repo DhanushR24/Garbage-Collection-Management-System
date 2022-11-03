@@ -7,6 +7,7 @@ const port = process.env.PORT || 3000;
 
 const { checkUser } = require("./helpers/helper");
 const userRouter = require("./routers/UserRouter");
+const collectRouter = require("./routers/collectRouter");
 
 const app = express();
 app.use(morgan("dev"));
@@ -44,6 +45,7 @@ app.get("/", (req, res) => {
 });
 
 app.use(userRouter);
+app.use(collectRouter);
 
 app.get("/map", (req, res) => {
   res.render("index", {

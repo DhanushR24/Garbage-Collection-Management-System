@@ -3,7 +3,7 @@
 :root {
         --bg-img: url("./images/garbage.jpg");
         --form-bg: white;
-        --form-ele: #5a63e0;
+        --form-ele: #3742dd;
         --blog-bg: #fffffff2;
         --blog-color: black;
 
@@ -134,6 +134,27 @@ label i.fas {
         color: transparent;
 }
 
+#ErrorPage {
+        width: 100%;
+        height: 100%;
+}
+
+#ErrorPage-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+}
+
+#errorPageHeading {
+        color: var(--form-ele);
+        font-size: 36px;
+
+        text-shadow: 2px 2px #737ae7;
+}
+
 .options a {
         margin-right: 1.2rem;
 }
@@ -147,7 +168,8 @@ label i.fas {
 .options .logout,
 .options .profile,
 .options .greet,
-.options .blogs {
+.options .preference,
+.options .track {
         font-size: 1.5rem;
 }
 
@@ -155,7 +177,8 @@ label i.fas {
 .options .login:hover,
 .options .logout:hover,
 .options .profile:hover,
-.options .blogs:hover {
+.options .track:hover,
+.options .preference:hover {
         border-radius: 5px;
         /* border: none; */
         color: #414ce6;
