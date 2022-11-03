@@ -50,3 +50,9 @@ app.get("/map", (req, res) => {
     title: "Map",
   });
 });
+
+app.get("*", (req, res) => {
+  res.render("404", {
+    title: "Oops",
+  });
+});
