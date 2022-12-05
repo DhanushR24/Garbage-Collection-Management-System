@@ -31,3 +31,9 @@ module.exports.pickup_get = (req, res) => {
     title: "Preference",
   });
 };
+
+module.exports.track_get = (req, res) => {
+  res.render("adminTrack", {
+    title: "Track",
+  });
+};

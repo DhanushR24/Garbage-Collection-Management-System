@@ -86,3 +86,14 @@ module.exports.logout_get = (req, res) => {
   res.clearCookie("jwt");
   res.redirect("/");
 };
+
+module.exports.pickup_get = (req, res) => {
+  User.find({ pickup: true })
+    .then((users) => {
+      console.log("users", users);
+      res.send(users);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};

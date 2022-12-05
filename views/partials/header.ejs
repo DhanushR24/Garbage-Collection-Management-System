@@ -44,7 +44,6 @@
                         </div>
                         <div class="options container-flex">
                                 <% if(user) { %>
-
                                         <h3>
                                                 <div class="greet">
                                                         <a href="/" style="text-decoration: none">
@@ -52,29 +51,40 @@
                                                         </a>
                                                 </div>
                                         </h3>
-                                        <a href="/pickup">
-                                                <div class="preference">Preference</div>
-                                        </a>
-                                        <a href="/track">
-                                                <div class="track">Track</div>
-                                        </a>
-                                        <a href="/profile">
-                                                <div class="profile">Profile</div>
-                                        </a>
-                                        <a href="/logout">
-                                                <div class="logout">Logout</div>
-                                        </a>
-                                        <% } else { %>
-                                                <a href="/signup">
-                                                        <div class="signup">Sign up</div>
+
+                                        <% if(user.isAdmin) { %>
                                                 </a>
-                                                <a href="/login">
-                                                        <div class="login">Login</div>
+                                                <a href="/adminPickup">
+                                                        <div class="track">Pick Up</div>
                                                 </a>
-                                                <% } %>
-                                                        <div id="mode" style="color: white;">
-                                                                <i class="fas fa-sun fa-sm"></i>
-                                                        </div>
+                                                <a href="/logout">
+                                                        <div class="logout">Logout</div>
+                                                </a>
+                                                <% } else { %>
+
+                                                        <a href="/pickup">
+                                                                <div class="preference">Preference</div>
+                                                        </a>
+                                                        <a href="/track">
+                                                                <div class="track">Track</div>
+                                                        </a>
+                                                        <a href="/profile">
+                                                                <div class="profile">Profile</div>
+                                                        </a>
+                                                        <a href="/logout">
+                                                                <div class="logout">Logout</div>
+                                                        </a>
+                                                        <% }} else { %>
+                                                                <a href="/signup">
+                                                                        <div class="signup">Sign up</div>
+                                                                </a>
+                                                                <a href="/login">
+                                                                        <div class="login">Login</div>
+                                                                </a>
+                                                                <% } %>
+                                                                        <div id="mode" style="color: white;">
+                                                                                <i class="fas fa-sun fa-sm"></i>
+                                                                        </div>
                         </div>
                 </div>
         </div>
