@@ -22,21 +22,21 @@
 
                         var origin = (binCoordinates = `${lat},${lng}`);
 
-                        if (navigator.geolocation) {
-                                navigator.geolocation.watchPosition(showPosition);
-                        } else {
-                                console.log("Geolocation is not supported by this browser.");
-                        }
+                        // if (navigator.geolocation) {
+                        //         navigator.geolocation.watchPosition(showPosition);
+                        // } else {
+                        //         console.log("Geolocation is not supported by this browser.");
+                        // }
 
-                        function showPosition(position) {
-                                lat = position.coords.latitude;
-                                lng = position.coords.longitude;
+                        // function showPosition(position) {
+                        //         lat = position.coords.latitude;
+                        //         lng = position.coords.longitude;
 
-                                truckMarker.setGeometry({ lat, lng });
-                                origin = `${lat},${lng}`;
+                        //         truckMarker.setGeometry({ lat, lng });
+                        //         origin = `${lat},${lng}`;
 
-                                map.center = { lat, lng };
-                        }
+                        //         map.center = { lat, lng };
+                        // }
 
                         function calculateRouteFromAtoB(start, end) {
                                 var router = platform.getRoutingService(null, 8),
@@ -122,28 +122,28 @@
                                 );
                         }
 
-                        map.addEventListener("tap", (evt) => {
-                                var coord = map.screenToGeo(
-                                        evt.currentPointer.viewportX,
-                                        evt.currentPointer.viewportY
-                                );
+                        // map.addEventListener("tap", (evt) => {
+                        //         var coord = map.screenToGeo(
+                        //                 evt.currentPointer.viewportX,
+                        //                 evt.currentPointer.viewportY
+                        //         );
 
-                                var binMarker = new H.map.Marker(bin, { icon: binIcon });
+                        //         var binMarker = new H.map.Marker(bin, { icon: binIcon });
 
-                                binMarker.setGeometry(coord);
+                        //         binMarker.setGeometry(coord);
 
-                                binCoordinates = `${coord.lat},${coord.lng}`;
+                        //         binCoordinates = `${coord.lat},${coord.lng}`;
 
-                                map.addObject(binMarker);
+                        //         map.addObject(binMarker);
 
-                                calculateRouteFromAtoB(origin, binCoordinates);
-                                origin = binCoordinates;
-                        });
+                        //         calculateRouteFromAtoB(origin, binCoordinates);
+                        //         origin = binCoordinates;
+                        // });
 
-                        var truck = { lat, lng };
+                        // var truck = { lat, lng };
+                        var truck;
                         var bin = { lat, lng };
 
-                        // optionally - resize a larger PNG image to a specific size
                         var truckIcon = new H.map.Icon(
                                 "https://img.icons8.com/fluency/48/000000/garbage-truck.png",
                                 { size: { w: 48, h: 48 } }
@@ -153,8 +153,19 @@
                                 { size: { w: 36, h: 36 } }
                         );
 
-                        // Create a marker icon from an image URL:
-                        var truckMarker = new H.map.Marker(truck, { icon: truckIcon });
+                        fetch("/getCoordinates")
+                                .then(res => res.json())
+                                .then(data => {
+                                        truck = { lat: data.lat, lng: data.lng }
+                                        // optionally - resize a larger PNG image to a specific size
+                                        console.log("truck : ", truck)
+                                        // Create a marker icon from an image URL:
+                                        var truckMarker = new H.map.Marker(truck, { icon: truckIcon });
+
+
+                                        map.addObject(truckMarker);
+                                })
+
 
                         // binMarker.draggable = true;
 
@@ -185,7 +196,6 @@
                         );
 
                         // Add the marker to the map:
-                        map.addObject(truckMarker);
                 </script>
 
                 <style>

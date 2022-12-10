@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const Truck = require("../models/truck");
 
 module.exports.pickup_post = (req, res) => {
   const id = req.params.id;
@@ -36,4 +37,29 @@ module.exports.track_get = (req, res) => {
   res.render("adminTrack", {
     title: "Track",
   });
+};
+
+module.exports.updateCoordinates = (req, res) => {
+  const lat = req.query.lat;
+  const lng = req.query.lng;
+  console.log(lat, lng);
+
+  Truck.findOneAndUpdate({ _id: "639424f57f027956bf9334da" }, { lat, lng })
+    .then((obj) => {
+      console.log("Truck : ", obj);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+module.exports.getCoordinates = (req, res) => {
+  Truck.findOne({ _id: "639424f57f027956bf9334da" })
+    .then((result) => {
+      console.log("getCoordinates", result);
+      res.json(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
