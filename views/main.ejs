@@ -1,0 +1,44 @@
+<%- include('partials/header'); -%>
+
+  <header>
+    <div class="Image">
+      <img src="images/Intro/read.svg" alt="">
+    </div>
+    <% if (user) { %>
+      <div class="headings">
+        <h2 style="color: #6C63FF;">Hey <%= user.name.split(' ')[0] %> </h2>
+          <h3 style="color: white;background-color: #6C63FF;text-transform: uppercase;">Welcome to BinCollect</h3>
+          <p>Garbage Collection Management System</p>
+        </div>
+        <% } else { %>
+          <div class="headings">
+            <h2 style="color: #6C63FF;">Hey there </h2>
+            <h3 style="color: white;background-color: #6C63FF;text-transform: uppercase;">Welcome to BinCollect</h3>
+            <p>Garbage Collection Management System</p>
+          </div>
+        <% } %>
+      </header>
+      <h1 style="font-size: 50px; margin: 1em 0.5em;">Features</h1>
+      <div class="container">
+        <div class="ele">
+          <img src="images/current_location.svg" alt="">
+          <div class="text-container">
+            <h2>Uses GPS</h2>
+            <p>You get the power to track the garbage-truck in real-time</p>
+          </div>
+        </div>
+        <div class="ele">
+          <img src="images/update_preference.svg" alt="">
+          <div class="text-container">
+            <h2>Update Preferences</h2>
+            <p>You get to update if a pick up is required at your place on a daily basis</p>
+          </div>
+        </div>
+        <div class="ele">
+          <img src="images/location_tracking.svg" alt="">
+          <div class="text-container">
+            <h2>Efficient Paths</h2>
+            <p>The cabin crew members get to see the location and the path to your place on the map</p>
+          </div>
+        </div>
+      </div>

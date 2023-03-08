@@ -1,0 +1,38 @@
+<%- include('partials/header'); -%>
+
+        <form id="preference" style="cursor: pointer;" data-user="<%= user._id %>"
+                title="Click here to change your preference">
+                <h2>
+                        <span style="color: lightblue;">Pick up ?</span>
+                        <%= user.pickup %>
+                </h2>
+                <% if (user.pickup) { %>
+                        <img src="/images/garbageFull.png" alt="" width="250px" height="250px" style="margin: 0 6em">
+                        <% } else { %>
+                                <img src="/images/garbageEmpty.png" alt="" width="250px" height="250px"
+                                        style="margin: 0 6em">
+                                <% } %>
+                                        <div class="form_foot">
+                                                <p>When you 🚫 to ♻️,
+                                                        it's the 🌏 you 💩</p>
+                                        </div>
+        </form>
+
+        <script>
+                form = document.getElementById("preference");
+
+                form.addEventListener("click", (e) => {
+                        const url = `/pickup/${form.dataset.user}`
+
+                        console.log(url)
+
+                        fetch(url, {
+                                method: "POST",
+                        })
+                                .then(res => res.json())
+                                .then(data => {
+                                        console.log(data)
+                                        window.location.assign("/pickup")
+                                })
+                })
+        </script>

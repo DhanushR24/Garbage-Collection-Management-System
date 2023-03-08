@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>BinCollect | <%= title %>
+        </title>
+        <link rel="stylesheet" href="/styles.css" />
+        <link rel="shortcut icon" href="./images/Blogger.svg" type="image/x-icon">
+        <script src="https://kit.fontawesome.com/e5a5ba9f21.js" crossorigin="anonymous" defer></script>
+
+        <link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
+        <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
+        <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
+        <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
+        <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
+
+        <link rel="shortcut icon" href="/images/truckFavicon.png" type="image/x-icon">
+</head>
+
+<body>
+        <div id="load">
+                <div class="center">
+                        <div class="wave"></div>
+                        <div class="wave"></div>
+                        <div class="wave"></div>
+                        <div class="wave"></div>
+                        <div class="wave"></div>
+                        <div class="wave"></div>
+                        <div class="wave"></div>
+                        <div class="wave"></div>
+                        <div class="wave"></div>
+                        <div class="wave"></div>
+                </div>
+        </div>
+
+        <div class="header">
+                <div class="head_container container-flex">
+                        <div class="main_head container-flex">
+                                <div class="header_text">
+                                        <h1 class="head text" id="bin"><a href="/">BinCollect</a></h1>
+                                </div>
+                        </div>
+                        <div class="options container-flex">
+                                <% if(user) { %>
+                                        <h3>
+                                                <div class="greet">
+                                                        <a href="/" style="text-decoration: none">
+                                                                Hello, <%= user.name %>
+                                                        </a>
+                                                </div>
+                                        </h3>
+
+                                        <% if(user.isAdmin) { %>
+                                                </a>
+                                                <a href="/adminPickup">
+                                                        <div class="track">Pick Up</div>
+                                                </a>
+                                                <a href="/logout">
+                                                        <div class="logout">Logout</div>
+                                                </a>
+                                                <% } else { %>
+
+                                                        <a href="/pickup">
+                                                                <div class="preference">Preference</div>
+                                                        </a>
+                                                        <a href="/track">
+                                                                <div class="track">Track</div>
+                                                        </a>
+                                                        <a href="/logout">
+                                                                <div class="logout">Logout</div>
+                                                        </a>
+                                                        <% }} else { %>
+                                                                <a href="/signup">
+                                                                        <div class="signup">Sign up</div>
+                                                                </a>
+                                                                <a href="/login">
+                                                                        <div class="login">Login</div>
+                                                                </a>
+                                                                <% } %>
+                                                                        <div id="mode" style="color: white;">
+                                                                                <i class="fas fa-sun fa-sm"></i>
+                                                                        </div>
+                        </div>
+                </div>
+        </div>
+
+        <script defer>
+                function getCookie(name) {
+                        let cookie = {};
+                        document.cookie.split(';').forEach(function (el) {
+                                let [k, v] = el.split('=');
+                                cookie[k.trim()] = v;
+                        })
+                        return cookie[name];
+                }
+
+                const root = document.querySelector(':root');
+                const mode = document.getElementById('mode');
+                if (!getCookie("mode")) {
+                        document.cookie = "mode=light";
+                }
+                var getMode = getCookie('mode');
+                if (getMode === "dark") {
+                        mode.innerHTML = '<i class="fas fa-moon fa-sm" ></i>';
+                        root.classList.add('active');
+
+                } else {
+                        mode.innerHTML = '<i class="fas fa-sun fa-sm" ></i>';
+                        root.classList.remove('active');
+                }
+                const loc = window.location.href.split('/');
+                const active = loc[loc.length - 1]
+                mode.addEventListener('click', () => {
+                        getMode = getCookie("mode");
+                        mode.querySelector('i').classList.toggle('fa-sun');
+                        mode.querySelector('i').classList.toggle('fa-moon');
+                        root.classList.toggle('active');
+
+                        console.log(getMode)
+                        document.cookie = `mode=${getMode == 'light' ? 'dark' : 'light'}`;
+                });
+                if (active) {
+                        document.querySelector(`.options a[href="/${active}"]`).classList.add('current-page')
+                }
+        </script>
